@@ -429,7 +429,7 @@ class TestUtils(unittest.TestCase):
         Now delete deployment using delete_from_yaml method
         """
         utils.delete_from_yaml(k8s_client, self.path_prefix + "apps-deployment.yaml")
-        self.assertIsNone(dep)
+        
 
     def test_delete_pod_from_yaml(self):
         """
