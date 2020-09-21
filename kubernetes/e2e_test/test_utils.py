@@ -433,7 +433,7 @@ class TestUtils(unittest.TestCase):
         try:
             response=app_api.read_namespaced_deployment(name="nginx-app",namespace="default")
             deployment_status=True
-        except exception as e:
+        except Exception as e:
             self.assertFalse(deployment_status)
 
 
