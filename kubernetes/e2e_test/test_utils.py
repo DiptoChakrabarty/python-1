@@ -436,6 +436,7 @@ class TestUtils(unittest.TestCase):
         except Exception as e:
             self.assertFalse(deployment_status)
 
+        self.assertFalse(deployment_status)
 
 
         
@@ -458,7 +459,15 @@ class TestUtils(unittest.TestCase):
         """
         utils.delete_from_yaml(
             k8s_client, self.path_prefix + "core-pod.yaml")
-        self.assertIsNone(pod)
+        pod_status=False
+        try:
+            response = core_api.read_namespaced_pod(name="myapp-pod",
+                                            namespace="default")
+            pod_status=True
+        except Exception as e:
+            self.assertFalse(pod_status)
+        self.assertFalse(pod_status)
+            
 
     def test_delete_service_from_yaml(self):
         """
@@ -478,7 +487,16 @@ class TestUtils(unittest.TestCase):
         """
         utils.delete_from_yaml(
             k8s_client, self.path_prefix + "core-service.yaml")
-        self.assertIsNone(svc)
+        service_status=False
+        try:
+            response = core_api.read_namespaced_service(name="my-service",namespace="default")
+            service_status=True 
+        except Exception as e:
+            self.assertFalse(service_status)
+        self.assertFalse(service_status)
+
+
+
 
     def test_delete_namespace_from_yaml(self):
         """
@@ -497,7 +515,15 @@ class TestUtils(unittest.TestCase):
         """
         utils.delete_from_yaml(
             k8s_client, self.path_prefix + "core-namespace.yaml")
-        self.assertIsNone(nmsp)
+        namespace_status=False
+        try:
+            response=core_api.read_namespace(name="development")
+            namespace_status=True
+        except Exception as e:
+            self.assertFalse(namespace_status)
+        self.assertFalse(namespace_status)
+
+
 
     def test_delete_rbac_role_from_yaml(self):
         """
@@ -517,7 +543,14 @@ class TestUtils(unittest.TestCase):
         """
         utils.delete_from_yaml(
             k8s_client, self.path_prefix + "rbac-role.yaml")
-        self.assertIsNone(rbac_role)
+        rbac_role_status=False
+        try:
+            response = rbac_api.read_namespaced_role(
+            name="pod-reader", namespace="default")
+            rbac_role_status=True
+        except Exception as e:
+            self.assertFalse(rbac_role_status)
+        self.assertFalse(rbac_role_status)
 
     def test_delete_rbac_role_from_yaml_with_verbose_enabled(self):
         """
@@ -537,7 +570,15 @@ class TestUtils(unittest.TestCase):
         """
         utils.delete_from_yaml(
             k8s_client, self.path_prefix + "rbac-role.yaml", verbose=True)
-        self.assertIsNone(rbac_role) 
+        
+        rbac_role_status=False
+        try:
+            response=rbac_api.read_namespaced_role(
+            name="pod-reader", namespace="default")
+            rbac_role_status=True
+        except Exception as e:
+            self.assertFalse(rbac_role_status)
+        self.assertFalse(rbac_role_status)
 
     # Deletion Tests for multi resource objects in yaml files
 
@@ -563,8 +604,24 @@ class TestUtils(unittest.TestCase):
         """
         utils.delete_from_yaml(
             k8s_client, self.path_prefix + "multi-resource.yaml")
-        self.assertIsNone(svc)
-        self.assertIsNone(ctr)
+        svc_status=False
+        replication_status=False
+        try:
+            resp_svc= core_api.read_namespaced_service(name="mock",
+                                               namespace="default")
+            svc_status=True
+            resp_repl= core_api.read_namespaced_replication_controller(
+            name="mock", namespace="default")
+            repl_status = True
+        except Exception as e:
+            self.assertFalse(svc_status)
+            self.assertFalse(repl_status)
+        self.assertFalse(svc_status)
+        self.assertFalse(repl_status)
+
+
+
+
     
     def test_delete_from_list_in_multi_resource_yaml(self):
         """
@@ -591,9 +648,30 @@ class TestUtils(unittest.TestCase):
         """
         utils.delete_from_yaml(
             k8s_client, self.path_prefix + "multi-resource-with-list.yaml")
-        self.assertIsNone(pod_0)
-        self.assertIsNone(pod_1)
-        self.assertIsNone(dep)
+        pod0_status=False
+        pod1_status=False
+        deploy_status=False
+        try:
+            core_api.read_namespaced_pod(
+            name="mock-pod-0", namespace="default")
+            core_api.read_namespaced_pod(
+            name="mock-pod-1", namespace="default")
+            app_api.read_namespaced_deployment(
+            name="mock", namespace="default")
+            pod0_status=True
+            pod1_status=True
+            deploy_status=True
+        except Exception as e:
+            self.assertFalse(pod0_status)
+            self.assertFalse(pod1_status)
+            self.assertFalse(deploy_status)
+        self.assertFalse(pod0_status)
+        self.assertFalse(pod1_status)
+        self.assertFalse(deploy_status)
+
+
+
+
     
 
 
