@@ -429,6 +429,15 @@ class TestUtils(unittest.TestCase):
         Now delete deployment using delete_from_yaml method
         """
         utils.delete_from_yaml(k8s_client, self.path_prefix + "apps-deployment.yaml")
+        deployment_status=False
+        try:
+            response=app_api.read_namespaced_deployment(name="nginx-app",namespace="default")
+            deployment_status=True
+        except exception as e:
+            self.assertFalse(deployment_status)
+
+
+
         
 
     def test_delete_pod_from_yaml(self):
