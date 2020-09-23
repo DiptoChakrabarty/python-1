@@ -166,10 +166,9 @@ class FailToDeleteError(Exception):
     An exception class for handling error if an error occurred when
     handling a yaml file during deletion of the resource.
     """
-
     def __init__(self, api_exceptions):
         self.api_exceptions = api_exceptions
-
+        
     def __str__(self):
         msg = ""
         for api_exception in self.api_exceptions:
