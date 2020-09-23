@@ -483,6 +483,7 @@ class TestUtils(unittest.TestCase):
         """
         utils.delete_from_yaml(
             k8s_client, self.path_prefix + "core-pod.yaml")
+        time.sleep(60)
         pod_status=False
         try:
             response = core_api.read_namespaced_pod(name="myapp-pod",
@@ -548,30 +549,6 @@ class TestUtils(unittest.TestCase):
             self.assertFalse(rbac_role_status)
         self.assertFalse(rbac_role_status)
     
-    def test_delete_namespace_from_yaml(self):
-        """
-        Should be able to delete a namespace
-
-        Create namespace from file first and ensure it is created
-        """
-        k8s_client = client.api_client.ApiClient(configuration=self.config)
-        utils.create_from_yaml(
-            k8s_client, self.path_prefix + "core-namespace.yaml")
-        core_api = client.CoreV1Api(k8s_client)
-        nmsp = core_api.read_namespace(name="development")
-        self.assertIsNotNone(nmsp)
-        """
-        Delete namespace from yaml
-        """
-        utils.delete_from_yaml(
-            k8s_client, self.path_prefix + "core-namespace.yaml")
-        namespace_status=False
-        try:
-            response=core_api.read_namespace(name="development")
-            namespace_status=True
-        except Exception as e:
-            self.assertFalse(namespace_status)
-        self.assertFalse(namespace_status)
 
     # Deletion Tests for multi resource objects in yaml files
 
@@ -597,7 +574,6 @@ class TestUtils(unittest.TestCase):
         """
         utils.delete_from_yaml(
             k8s_client, self.path_prefix + "multi-resource.yaml")
-        time.sleep(40)
         svc_status=False
         replication_status=False
         try:
@@ -609,9 +585,9 @@ class TestUtils(unittest.TestCase):
             repl_status = True
         except Exception as e:
             self.assertFalse(svc_status)
-            self.assertFalse(repl_status)
+            self.assertFalse(replication_status)
         self.assertFalse(svc_status)
-        self.assertFalse(repl_status)
+        self.assertFalse(replication_status)
 
 
 
@@ -642,7 +618,7 @@ class TestUtils(unittest.TestCase):
         """
         utils.delete_from_yaml(
             k8s_client, self.path_prefix + "multi-resource-with-list.yaml")
-        time.sleep(40)
+        time.sleep(60)
         pod0_status=False
         pod1_status=False
         deploy_status=False
