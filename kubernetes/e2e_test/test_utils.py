@@ -13,7 +13,7 @@
 # under the License.
 
 import unittest
-
+import time 
 import yaml
 from kubernetes import utils, client
 from kubernetes.client.rest import ApiException
@@ -438,37 +438,6 @@ class TestUtils(unittest.TestCase):
 
         self.assertFalse(deployment_status)
 
-
-        
-
-    def test_delete_pod_from_yaml(self):
-        """
-        Should be able to delete pod
-
-        Create pod from file first and ensure it is created
-        """
-        k8s_client = client.api_client.ApiClient(configuration=self.config)
-        utils.create_from_yaml(
-            k8s_client, self.path_prefix + "core-pod.yaml")
-        core_api = client.CoreV1Api(k8s_client)
-        pod = core_api.read_namespaced_pod(name="myapp-pod",
-                                           namespace="default")
-        self.assertIsNotNone(pod)
-        """
-        Delete pod using delete_from_yaml
-        """
-        utils.delete_from_yaml(
-            k8s_client, self.path_prefix + "core-pod.yaml")
-        pod_status=False
-        try:
-            response = core_api.read_namespaced_pod(name="myapp-pod",
-                                            namespace="default")
-            pod_status=True
-        except Exception as e:
-            self.assertFalse(pod_status)
-        self.assertFalse(pod_status)
-            
-
     def test_delete_service_from_yaml(self):
         """
         Should be able to delete a service
@@ -495,34 +464,33 @@ class TestUtils(unittest.TestCase):
             self.assertFalse(service_status)
         self.assertFalse(service_status)
 
-
-
-
-    def test_delete_namespace_from_yaml(self):
+    
+    def test_delete_pod_from_yaml(self):
         """
-        Should be able to delete a namespace
+        Should be able to delete pod
 
-        Create namespace from file first and ensure it is created
+        Create pod from file first and ensure it is created
         """
         k8s_client = client.api_client.ApiClient(configuration=self.config)
         utils.create_from_yaml(
-            k8s_client, self.path_prefix + "core-namespace.yaml")
+            k8s_client, self.path_prefix + "core-pod.yaml")
         core_api = client.CoreV1Api(k8s_client)
-        nmsp = core_api.read_namespace(name="development")
-        self.assertIsNotNone(nmsp)
+        pod = core_api.read_namespaced_pod(name="myapp-pod",
+                                            namespace="default")
+        self.assertIsNotNone(pod)
         """
-        Delete namespace from yaml
+        Delete pod using delete_from_yaml
         """
         utils.delete_from_yaml(
-            k8s_client, self.path_prefix + "core-namespace.yaml")
-        namespace_status=False
+            k8s_client, self.path_prefix + "core-pod.yaml")
+        pod_status=False
         try:
-            response=core_api.read_namespace(name="development")
-            namespace_status=True
+            response = core_api.read_namespaced_pod(name="myapp-pod",
+                                            namespace="default")
+            pod_status=True
         except Exception as e:
-            self.assertFalse(namespace_status)
-        self.assertFalse(namespace_status)
-
+            self.assertFalse(pod_status)
+        self.assertFalse(pod_status)
 
 
     def test_delete_rbac_role_from_yaml(self):
@@ -579,6 +547,31 @@ class TestUtils(unittest.TestCase):
         except Exception as e:
             self.assertFalse(rbac_role_status)
         self.assertFalse(rbac_role_status)
+    
+    def test_delete_namespace_from_yaml(self):
+        """
+        Should be able to delete a namespace
+
+        Create namespace from file first and ensure it is created
+        """
+        k8s_client = client.api_client.ApiClient(configuration=self.config)
+        utils.create_from_yaml(
+            k8s_client, self.path_prefix + "core-namespace.yaml")
+        core_api = client.CoreV1Api(k8s_client)
+        nmsp = core_api.read_namespace(name="development")
+        self.assertIsNotNone(nmsp)
+        """
+        Delete namespace from yaml
+        """
+        utils.delete_from_yaml(
+            k8s_client, self.path_prefix + "core-namespace.yaml")
+        namespace_status=False
+        try:
+            response=core_api.read_namespace(name="development")
+            namespace_status=True
+        except Exception as e:
+            self.assertFalse(namespace_status)
+        self.assertFalse(namespace_status)
 
     # Deletion Tests for multi resource objects in yaml files
 
@@ -604,6 +597,7 @@ class TestUtils(unittest.TestCase):
         """
         utils.delete_from_yaml(
             k8s_client, self.path_prefix + "multi-resource.yaml")
+        time.sleep(40)
         svc_status=False
         replication_status=False
         try:
@@ -648,6 +642,7 @@ class TestUtils(unittest.TestCase):
         """
         utils.delete_from_yaml(
             k8s_client, self.path_prefix + "multi-resource-with-list.yaml")
+        time.sleep(40)
         pod0_status=False
         pod1_status=False
         deploy_status=False
