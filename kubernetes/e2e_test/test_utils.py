@@ -478,8 +478,8 @@ class TestUtils(unittest.TestCase):
         """
         Delete namespace from yaml
         """
-        utils.delete_from_yaml(
-            k8s_client, self.path_prefix + "core-namespace.yaml")
+        utils.delete_from_yaml(k8s_client, self.path_prefix + "core-namespace.yaml")
+        time.sleep(120)
         namespace_status=False
         try:
             response=core_api.read_namespace(name="development")
@@ -507,7 +507,7 @@ class TestUtils(unittest.TestCase):
         """
         utils.delete_from_yaml(
             k8s_client, self.path_prefix + "core-pod.yaml")
-        time.sleep(60)
+        time.sleep(120)
         pod_status=False
         try:
             response = core_api.read_namespaced_pod(name="myapp-pod",
@@ -642,7 +642,7 @@ class TestUtils(unittest.TestCase):
         """
         utils.delete_from_yaml(
             k8s_client, self.path_prefix + "multi-resource-with-list.yaml")
-        time.sleep(60)
+        time.sleep(120)
         pod0_status=False
         pod1_status=False
         deploy_status=False
