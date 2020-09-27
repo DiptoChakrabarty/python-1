@@ -470,6 +470,7 @@ class TestUtils(unittest.TestCase):
         Create namespace from file first and ensure it is created
         """
         k8s_client = client.api_client.ApiClient(configuration=self.config)
+        time.sleep(120)
         utils.create_from_yaml(
             k8s_client, self.path_prefix + "core-namespace.yaml")
         core_api = client.CoreV1Api(k8s_client)
@@ -496,6 +497,7 @@ class TestUtils(unittest.TestCase):
         Create pod from file first and ensure it is created
         """
         k8s_client = client.api_client.ApiClient(configuration=self.config)
+        time.sleep(120)
         utils.create_from_yaml(
             k8s_client, self.path_prefix + "core-pod.yaml")
         core_api = client.CoreV1Api(k8s_client)
@@ -624,6 +626,7 @@ class TestUtils(unittest.TestCase):
         Create the items first and ensure they exist
         """
         k8s_client = client.api_client.ApiClient(configuration=self.config)
+        time.sleep(120)
         utils.create_from_yaml(
             k8s_client, self.path_prefix + "multi-resource-with-list.yaml")
         core_api = client.CoreV1Api(k8s_client)
