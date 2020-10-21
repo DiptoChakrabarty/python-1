@@ -159,6 +159,7 @@ def delete_from_yaml_single_item(k8s_client, yml_document, verbose=False, **kwar
         if hasattr(res, 'status'):
             msg += " status='{0}'".format(str(res.status))
         print(msg)
+    return res
                 
 
 class FailToDeleteError(Exception):
