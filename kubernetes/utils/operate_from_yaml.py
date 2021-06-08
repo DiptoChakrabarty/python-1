@@ -134,17 +134,17 @@ def operate_from_yaml_single_item(k8s_client,
     kind = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', kind)
     kind = re.sub('([a-z0-9])([A-Z])', r'\1_\2', kind).lower()
     if operation=="create":
-        res = create_k8s_object(k8s_api,yml_document,kind,namespace=namespace)
+        resp = create_k8s_object(k8s_api,yml_document,kind,namespace=namespace)
         if verbose:
             msg = "{0} created.".format(kind)
             if hasattr(resp, 'status'):
                 msg += " status='{0}'".format(str(resp.status))
             print(msg)
     elif operation=="delete":
-        res = delete_k8s_object(k8s_api,yml_document,kind,namespace=namespace)
+        resp = delete_k8s_object(k8s_api,yml_document,kind,namespace=namespace)
         if verbose:
             msg = "{0} deleted.".format(kind)
-            if hasattr(res, 'status'):
+            if hasattr(resp, 'status'):
                 msg += " status='{0}'".format(str(res.status))
             print(msg)
         
@@ -160,7 +160,7 @@ def create_k8s_object(k8s_api, yml_document, kind,**kwargs):
         kwargs.pop('namespace', None)
         resp = getattr(k8s_api, "create_{0}".format(kind))(
             body=yml_document, **kwargs)
-    return True
+    return resp
 
 
 def delete_k8s_object(k8s_api, yml_document, kind,**kwargs):
@@ -170,7 +170,7 @@ def delete_k8s_object(k8s_api, yml_document, kind,**kwargs):
             namespace = yml_document["metadata"]["namespace"]
             kwargs["namespace"] = namespace
         name = yml_document["metadata"]["name"]
-        res = getattr(k8s_api, "delete_namespaced_{}".format(kind))(
+        resp = getattr(k8s_api, "delete_namespaced_{}".format(kind))(
             name=name,
             body=client.V1DeleteOptions(propagation_policy="Background",
                                         grace_period_seconds=5), **kwargs)
@@ -178,11 +178,11 @@ def delete_k8s_object(k8s_api, yml_document, kind,**kwargs):
         # get name of object to delete
         name = yml_document["metadata"]["name"]
         kwargs.pop('namespace', None)
-        res = getattr(k8s_api, "delete_{}".format(kind))(
+        resp = getattr(k8s_api, "delete_{}".format(kind))(
             name=name,
             body=client.V1DeleteOptions(propagation_policy="Background",
                                         grace_period_seconds=5), **kwargs)
-    return True
+    return resp
 
 
 
