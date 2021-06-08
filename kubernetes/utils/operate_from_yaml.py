@@ -145,7 +145,7 @@ def operate_from_yaml_single_item(k8s_client,
         if verbose:
             msg = "{0} deleted.".format(kind)
             if hasattr(resp, 'status'):
-                msg += " status='{0}'".format(str(res.status))
+                msg += " status='{0}'".format(str(resp.status))
             print(msg)
         
 
