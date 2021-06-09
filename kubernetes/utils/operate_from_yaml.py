@@ -198,7 +198,7 @@ def delete_k8s_object(k8s_api, yml_document, kind, **kwargs):
                                         grace_period_seconds=5), **kwargs)
     return resp
 
-    
+
 class FailToExecuteError(Exception):
     """
     An exception class for handling error if an error occurred when
