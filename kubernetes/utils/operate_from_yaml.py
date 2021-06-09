@@ -20,17 +20,20 @@ import yaml
 
 from kubernetes import client
 
+
 def create_from_yaml(k8s_client, yaml_file, verbose=False,
                      namespace="default", **kwargs):
     operation = "create"
     operate_from_yaml(k8s_client, yaml_file, operation, verbose=False,
                       namespace="default", **kwargs)
 
+
 def delete_from_yaml(k8s_client, yaml_file, verbose=False,
                      namespace="default", **kwargs):
     operation = "delete"
     operate_from_yaml(k8s_client, yaml_file, operation, verbose=False,
                       namespace="default", **kwargs)
+
 
 def operate_from_yaml(k8s_client, yaml_file, operation, verbose=False,
                       namespace="default", **kwargs):
@@ -68,6 +71,7 @@ def operate_from_yaml(k8s_client, yaml_file, operation, verbose=False,
                 failures.extend(failure.api_exceptions)
         if failures:
             raise FailToExecuteError(failures)
+
 
 def operate_from_dict(k8s_client, yml_document, operation, verbose,
                       namespace="default", **kwargs):
@@ -117,6 +121,7 @@ def operate_from_dict(k8s_client, yml_document, operation, verbose,
     if api_exceptions:
         raise FailToExecuteError(api_exceptions)
 
+
 def operate_from_yaml_single_item(
         k8s_client,
         yml_document,
@@ -156,6 +161,7 @@ def operate_from_yaml_single_item(
                 msg += " status='{0}'".format(str(resp.status))
             print(msg)
 
+
 def create_k8s_object(k8s_api, yml_document, kind, **kwargs):
 
     if hasattr(k8s_api, "create_namespaced_{0}".format(kind)):
@@ -169,6 +175,7 @@ def create_k8s_object(k8s_api, yml_document, kind, **kwargs):
         resp = getattr(k8s_api, "create_{0}".format(kind))(
             body=yml_document, **kwargs)
     return resp
+
 
 def delete_k8s_object(k8s_api, yml_document, kind, **kwargs):
 
@@ -191,6 +198,7 @@ def delete_k8s_object(k8s_api, yml_document, kind, **kwargs):
                                         grace_period_seconds=5), **kwargs)
     return resp
 
+    
 class FailToExecuteError(Exception):
     """
     An exception class for handling error if an error occurred when
