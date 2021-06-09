@@ -84,6 +84,8 @@ For more details, see [#974](https://github.com/kubernetes-client/python/issues/
 
 4. Remove the tests directory (ref: https://github.com/kubernetes-client/python/commit/ec9c944f076999543cd2122aff2d86f969d82548). See the [upstream issue](https://github.com/OpenAPITools/openapi-generator/issues/5377) for more information.
 
+5. Add tests for the default `Configuration` behavior (ref: https://github.com/kubernetes-client/python/pull/1303 and https://github.com/kubernetes-client/python/pull/1285). The commit [1ffa61d0650e4c93e0d7f0becd2c54797eafd407](https://github.com/kubernetes-client/python/pull/1285/commits/1ffa61d0650e4c93e0d7f0becd2c54797eafd407) should be cherry-picked.
+
 Commit the manual changes like this [PR](https://github.com/kubernetes-client/python/pull/995/commits) does, then create your PR for review.
 
 Alternatively, you can use the `scripts/apply-hotfixes.sh` script to apply
@@ -138,7 +140,7 @@ this step and go back to the master branch if there are any API changes.
 ## Make distribution packages
 
 First make sure you are using a clean version of python. Use virtualenv and
-pyenv packages. Make sure you are using python 2.7.12. I would normally do this
+pyenv packages. Make sure you are using python 3.9.1. I would normally do this
 on a clean machine:
 
 (install [pyenv](https://github.com/yyuu/pyenv#installation))
@@ -147,11 +149,11 @@ on a clean machine:
 
 ```bash
 git clean -xdf
-pyenv install -s 2.7.12
-pyenv global 2.7.12
+pyenv install -s 3.9.1
+pyenv global 3.9.1
 virtualenv .release
 source .release/bin/activate
-python --version     # Make sure you get Python 2.7.12
+python --version     # Make sure you get Python 3.9.1
 pip install twine
 ```
 

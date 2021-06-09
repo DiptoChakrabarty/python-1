@@ -14,7 +14,7 @@
 
 __project__ = 'kubernetes'
 # The version is auto-updated. Please do not edit.
-__version__ = "12.0.0-snapshot"
+__version__ = "17.0.0-snapshot"
 
 import kubernetes.client
 import kubernetes.config
@@ -22,3 +22,4 @@ import kubernetes.dynamic
 import kubernetes.watch
 import kubernetes.stream
 import kubernetes.utils
+import kubernetes.leaderelection
