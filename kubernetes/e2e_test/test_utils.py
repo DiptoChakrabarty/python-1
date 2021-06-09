@@ -65,8 +65,8 @@ class TestUtils(unittest.TestCase):
             yml_obj = yaml.safe_load(f)
 
         yml_obj["metadata"]["name"] = "nginx-app-3"
-
-        utils.create_from_dict(k8s_client, yml_obj)
+        operation = "create"
+        utils.operate_from_dict(k8s_client, yml_obj , operation)
 
         app_api = client.AppsV1Api(k8s_client)
         dep = app_api.read_namespaced_deployment(name="nginx-app-3",
