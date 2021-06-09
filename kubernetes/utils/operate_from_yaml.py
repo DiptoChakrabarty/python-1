@@ -20,21 +20,23 @@ import yaml
 
 from kubernetes import client
 
+
 def create_from_yaml(k8s_client, yaml_file, verbose=False,
                      namespace="default", **kwargs):
     operation = "create"
-    operate_from_yaml(k8s_client, yaml_file, operation,verbose=False,
-                     namespace="default", **kwargs)
+    operate_from_yaml(k8s_client, yaml_file, operation, verbose=False,
+                      namespace="default", **kwargs)
+
 
 def delete_from_yaml(k8s_client, yaml_file, verbose=False,
                      namespace="default", **kwargs):
     operation = "delete"
-    operate_from_yaml(k8s_client, yaml_file, operation,verbose=False,
-                     namespace="default", **kwargs)
+    operate_from_yaml(k8s_client, yaml_file, operation, verbose=False,
+                      namespace="default", **kwargs)
 
 
 def operate_from_yaml(k8s_client, yaml_file, operation, verbose=False,
-                     namespace="default",**kwargs):
+                      namespace="default", **kwargs):
     """
     Input:
     yaml_file: string. Contains the path to yaml file.
@@ -64,15 +66,15 @@ def operate_from_yaml(k8s_client, yaml_file, operation, verbose=False,
         for yml_document in yml_document_all:
             try:
                 operate_from_dict(k8s_client, yml_document, operation, verbose,
-                                 namespace=namespace, **kwargs)
+                                  namespace=namespace, **kwargs)
             except FailToExecuteError as failure:
                 failures.extend(failure.api_exceptions)
         if failures:
             raise FailToExecuteError(failures)
 
 
-def operate_from_dict(k8s_client, yml_document,operation, verbose,
-                     namespace="default",**kwargs):
+def operate_from_dict(k8s_client, yml_document, operation, verbose,
+                      namespace="default", **kwargs):
     """
     Perform an operation kubernetes resource from a dictionary containing valid kubernetes
     API object (i.e. List, Service, etc).
@@ -99,8 +101,12 @@ def operate_from_dict(k8s_client, yml_document,operation, verbose,
                 yml_doc["kind"] = kind
             try:
                 operate_from_yaml_single_item(
-                    k8s_client, yml_doc, operation, verbose, namespace=namespace, **kwargs
-                )
+                    k8s_client,
+                    yml_doc,
+                    operation,
+                    verbose,
+                    namespace=namespace,
+                    **kwargs)
             except client.rest.ApiException as api_exception:
                 api_exceptions.append(api_exception)
     else:
@@ -116,8 +122,13 @@ def operate_from_dict(k8s_client, yml_document,operation, verbose,
         raise FailToExecuteError(api_exceptions)
 
 
-def operate_from_yaml_single_item(k8s_client,
-                                 yml_document,operation,verbose=False,namespace="default", **kwargs):
+def operate_from_yaml_single_item(
+        k8s_client,
+        yml_document,
+        operation,
+        verbose=False,
+        namespace="default",
+        **kwargs):
     # get group and version from apiVersion
     group, _, version = yml_document["apiVersion"].partition("/")
     if version == "":
@@ -133,23 +144,26 @@ def operate_from_yaml_single_item(k8s_client,
     kind = yml_document["kind"]
     kind = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', kind)
     kind = re.sub('([a-z0-9])([A-Z])', r'\1_\2', kind).lower()
-    if operation=="create":
-        resp = create_k8s_object(k8s_api,yml_document,kind,namespace=namespace)
+    if operation == "create":
+        resp = create_k8s_object(
+            k8s_api, yml_document, kind, namespace=namespace)
         if verbose:
             msg = "{0} created.".format(kind)
             if hasattr(resp, 'status'):
                 msg += " status='{0}'".format(str(resp.status))
             print(msg)
-    elif operation=="delete":
-        resp = delete_k8s_object(k8s_api,yml_document,kind,namespace=namespace)
+    elif operation == "delete":
+        resp = delete_k8s_object(
+            k8s_api, yml_document, kind, namespace=namespace)
         if verbose:
             msg = "{0} deleted.".format(kind)
             if hasattr(resp, 'status'):
                 msg += " status='{0}'".format(str(resp.status))
             print(msg)
-        
 
-def create_k8s_object(k8s_api, yml_document, kind,**kwargs):
+
+def create_k8s_object(k8s_api, yml_document, kind, **kwargs):
+
     if hasattr(k8s_api, "create_namespaced_{0}".format(kind)):
         if "namespace" in yml_document["metadata"]:
             namespace = yml_document["metadata"]["namespace"]
@@ -163,8 +177,8 @@ def create_k8s_object(k8s_api, yml_document, kind,**kwargs):
     return resp
 
 
-def delete_k8s_object(k8s_api, yml_document, kind,**kwargs):
-    print(kwargs)
+def delete_k8s_object(k8s_api, yml_document, kind, **kwargs):
+
     if hasattr(k8s_api, "create_namespaced_{0}".format(kind)):
         if "namespace" in yml_document["metadata"]:
             namespace = yml_document["metadata"]["namespace"]
@@ -185,12 +199,10 @@ def delete_k8s_object(k8s_api, yml_document, kind,**kwargs):
     return resp
 
 
-
-
 class FailToExecuteError(Exception):
     """
     An exception class for handling error if an error occurred when
-    handling a yaml file during deletion of the resource.
+    handling a yaml file during creation or deletion of the resource.
     """
 
     def __init__(self, api_exceptions):
@@ -202,5 +214,3 @@ class FailToExecuteError(Exception):
             msg += "Error from server ({0}):{1}".format(
                 api_exception.reason, api_exception.body)
         return msg
-        
-
