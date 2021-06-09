@@ -181,7 +181,7 @@ class TestUtils(unittest.TestCase):
         svc = reg_api.read_api_service(
             name="v1alpha1.wardle.k8s.io")
         self.assertIsNotNone(svc)
-        with self.assertRaises(utils.FailToCreateError) as cm:
+        with self.assertRaises(utils.FailToExecuteError) as cm:
             utils.create_from_yaml(
                 k8s_client, "kubernetes/e2e_test/test_yaml/api-service.yaml")
         exp_error = ('Error from server (Conflict): '
@@ -243,7 +243,7 @@ class TestUtils(unittest.TestCase):
         json file that implicitly indicates the kind of individual objects
         """
         k8s_client = client.api_client.ApiClient(configuration=self.config)
-        with self.assertRaises(utils.FailToCreateError):
+        with self.assertRaises(utils.FailToExecuteError):
             utils.create_from_yaml(
                 k8s_client, self.path_prefix + "implicit-svclist.json")
         core_api = client.CoreV1Api(k8s_client)
@@ -320,7 +320,7 @@ class TestUtils(unittest.TestCase):
         svc = core_api.read_namespaced_service(name="mock-2",
                                                namespace="default")
         self.assertIsNotNone(svc)
-        with self.assertRaises(utils.FailToCreateError) as cm:
+        with self.assertRaises(utils.FailToExecuteError) as cm:
             utils.create_from_yaml(
                 k8s_client, self.path_prefix + "yaml-conflict-multi.yaml")
         exp_error = ('Error from server (Conflict): {"kind":"Status",'
@@ -345,7 +345,7 @@ class TestUtils(unittest.TestCase):
         Should raise an exception that contains two error messages.
         """
         k8s_client = client.api_client.ApiClient(configuration=self.config)
-        with self.assertRaises(utils.FailToCreateError) as cm:
+        with self.assertRaises(utils.FailToExecuteError) as cm:
             utils.create_from_yaml(
                 k8s_client, self.path_prefix + "triple-nginx.yaml")
         exp_error = ('Error from server (Conflict): {"kind":"Status",'
