@@ -16,8 +16,5 @@ from __future__ import absolute_import
 
 from .quantity import parse_quantity
 
-from .create_from_yaml import (FailToCreateError, create_from_dict,
-                               create_from_yaml)
-                               
-from .delete_from_yaml import (FailToDeleteError,delete_from_dict,delete_from_yaml)
-
+from .operate_from_yaml import (FailToExecuteError ,operate_from_dict,
+                                create_from_yaml, delete_from_yaml)
